@@ -26,6 +26,7 @@
         
         <ul>
             <li><a href="">Categories</a></li>
+<<<<<<< HEAD
             {% if request.session.user_id %}
                 <li><a href="{% url 'profile' %}"><span><i class="fa-solid fa-user"></i></span>Profile</a></li>
                 <li><a href="{% url 'logout' %}">Logout</a></li>
@@ -34,6 +35,10 @@
                 <li><a href="{% url 'signup' %}">Sign Up</a></li>
             {% endif %}
             <li><a href="">Cart</a></li>
+=======
+            <li><a href=""><i class="fa-solid fa-cart-plus" id="cart-icon"></i><span>0</span> Cart</a></li>
+            <li id="icon"><a href=""><span><i class="fa-solid fa-user"></i></span>Login</a></li>
+>>>>>>> 6a0e6a2a322b349151f7fa8b8e77b1ec17898884
         </ul>
     </div>
 
