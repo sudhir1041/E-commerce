@@ -5,3 +5,14 @@ def home(request):
     data=Product.objects.all()
     return render(request,"index.html",{'data':data})
 
+def signup(request):
+    return render(request,'signup.html')
+
+def login(request):
+    return render(request,'login.html')
+
+def profile(request):
+    return render(request,'profile.html')
+
+def logout(request):
+    return HttpResponse("successfuly Logout")

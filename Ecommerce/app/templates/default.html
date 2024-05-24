@@ -1,18 +1,19 @@
-{%block header%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{% block title %}Document{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'nav.css' %}">
     <script src="https://kit.fontawesome.com/cb91b67637.js" crossorigin="anonymous"></script>
-    </head>
+</head>
 <body>
     <div class="nav">
         <div class="logo">
+            <a href="/">
             <img src="{% static 'images/lg-removebg-preview - Copy.png' %}" alt="">
+            </a>
         </div>
         <form action="">
             <div class="search-container">
@@ -22,20 +23,24 @@
                 <button><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
         </form>
-
+        
         <ul>
             <li><a href="">Categories</a></li>
-            <li><a href=""><span><i class="fa-solid fa-user"></i></span>Login</a></li>
+            {% if request.session.user_id %}
+                <li><a href="{% url 'profile' %}"><span><i class="fa-solid fa-user"></i></span>Profile</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}"><span><i class="fa-solid fa-user"></i></span>Login</a></li>
+                <li><a href="{% url 'signup' %}">Sign Up</a></li>
+            {% endif %}
             <li><a href="">Cart</a></li>
         </ul>
     </div>
-    {%endblock%}
 
-    {%block container%}
-
-    {%endblock%}
-
-    {%block footer%}
+    {% block content %}
+    {% endblock %}
+    
+    {% block footer %}
+    {% endblock %}
 </body>
 </html>
-{%endblock%}
