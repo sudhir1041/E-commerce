@@ -1,8 +1,9 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
 .nav {
     height: 12vh;
     width: 100%;
@@ -33,7 +34,7 @@
     height: 100%;
     width: 100%;
     display: flex;
-    background-color:transparent;
+    background-color: transparent;
     border: 2px solid rgb(101, 87, 225);
 }
 
@@ -61,22 +62,30 @@
     outline: 0%;
     background-color: transparent;
 }
-.nav ul{
+
+.nav ul {
     width: 30%;
     height: 100%;
     display: flex;
     justify-content: space-around;
 }
-.nav ul li{
+
+.nav ul li {
     list-style: none;
     position: relative;
     top: 20px;
     font-size: 20px
 }
-.nav ul li a{
+
+.nav ul li a {
     text-decoration: none;
     color: #ffff;
 }
-.nav ul li a span{
+
+.nav ul li a span {
     margin-right: 5px;
+}
+
+.nav ul #icon a #cart-icon {
+    font-size: 40px;
 }
