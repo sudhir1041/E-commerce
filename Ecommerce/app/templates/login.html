@@ -1,8 +1,25 @@
 {% extends "default.html" %}
 
-{% block title %}Login{% endblock %}
+{% block title %}EasyKart Login{% endblock %}
 
 {% block content %}
-<h1>This is login</h1>
-<h1>This is login</h1>
+{% load static %}
+
+<div class="wrapper">
+    <div class="login-container">
+        <div class="login-header">
+            <img src="{% static 'images/lg-removebg-preview - Copy.png' %}" alt="EasyKart Logo">
+            <h2>Login</h2>
+        </div>
+        <p class="error-message">{{error}}</p>
+        <form action="{% url 'loginData' %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Email or Phone" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="submit" value="Login">
+        </form>
+        <a href="#">Forgot Password?</a>
+        <a href="{% url 'signup' %}">Sign Up</a>
+    </div>
+</div>
 {% endblock %}
