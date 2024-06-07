@@ -38,21 +38,18 @@ def login(request):
 
 def loginData(request):
     if request.method == 'POST':
-        email=request.POST.get('email')
-        phone=request.POST.get('phone')
-        password=request.POST.get('password')
-        try:
-            customer = Customer.objects.get(email=email, phone=phone)
-        except Customer.DoesNotExist:
-            msg = "Invalid email or phone number."
-            return render(request, 'login.html', {'error': msg})
-    
-        if customer.password != password:
-            msg = "Invalid password."
-            return render(request, 'login.html', {'error': msg})
+        username = request.POST.get('username')
+        password = request.POST.get('password')
         
-        request.session['user_email'] = customer.email
-        return redirect('/dashboard')
+        customer = Customer.objects.filter(email=username, password=password).first() or \
+                   Customer.objects.filter(phone=username, password=password).first()
+        
+        if customer:
+            request.session['user_email'] = customer.email
+            return redirect('/dashboard')
+        
+        msg = "Incorrect email/phone and password"
+        return render(request, 'login.html', {'error': msg})
     
     return redirect('/login')
 
