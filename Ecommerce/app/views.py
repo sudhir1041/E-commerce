@@ -33,6 +33,7 @@ def signupDataSave(request):
             password=password
         )
         return redirect('/login')
+    
 def login(request):
     return render(request,'login.html')
 
@@ -47,15 +48,27 @@ def loginData(request):
         if customer:
             request.session['user_email'] = customer.email
             return redirect('/dashboard')
-        
-        msg = "Incorrect email/phone and password"
-        return render(request, 'login.html', {'error': msg})
-    
-    return redirect('/login')
+        else:
+            msg = "Incorrect email/phone and password"
+            return render(request, 'login.html', {'error': msg})
+    else:
+        return redirect('/login')
+def dashboard(request):
+    user_email = request.session.get('user_email')
+    if not user_email:
+        return redirect('/login')
+    else:
+        customer = Customer.objects.get(email=user_email)
+        return render(request, 'dashboard.html', {'customer': customer})
 
 def profile(request):
-    return render(request,'profile.html')
+    user_email = request.session.get('user_email')
+    if not user_email:
+        return redirect('/login')
+    else:
+        customer = Customer.objects.get(email=user_email)
+        return render(request, 'profile.html', {'customer': customer})
 
 def logout(request):
-    request.session.flush()
+    del request.session['user_email']
     return redirect('/login')

@@ -28,7 +28,7 @@
         
         <ul>
             <li><a href="">Categories</a></li>
-            {% if request.session.user_id %}
+            {% if request.session.user_email %}
                 <li><a href="{% url 'profile' %}"><span><i class="fa-solid fa-user"></i></span>Profile</a></li>
                 <li><a href="{% url 'logout' %}">Logout</a></li>
             {% else %}
