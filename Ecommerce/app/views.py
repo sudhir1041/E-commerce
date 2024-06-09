@@ -61,7 +61,7 @@ def dashboard(request):
         return redirect('/login')
     else:
         customer = Customer.objects.get(email=user_email)
-        return render(request, 'dashboard.html', {'customer': customer})
+        return render(request, 'index.html', {'customer': customer})
 
 def profile(request):
     user_email = request.session.get('user_email')
@@ -92,6 +92,7 @@ def send_otp(request):
             recipient_list = [email]
             send_mail(subject, message, from_email, recipient_list,fail_silently=False)
             request.session['verification_code'] = verification_code
+            request.session['username'] = username
             msg='Otp send Your Email'
             return render(request, 'otp-verification.html',{'error':msg})
     else:
@@ -100,10 +101,21 @@ def send_otp(request):
 def verify_otp(request):
     user_entered_otp = request.POST.get('otp')
     user_send_otp = request.session.get('verification_code')
+    username=request.session.get('username')
     if user_entered_otp == user_send_otp:
+        request.session['setpassword']=username
         msg='OTP verified successfully!'
-        return render(request,'login.html',{'error':msg})
+        return render(request,'new-password.html',{'error':msg})
     else:
         msg='Invalid OTP!'
         return render(request,'otp-verification.html',{'error':msg})
-        
+
+def changepassword(request):
+    userdata=request.session.get('setpassword')
+    userid=userdata
+    print(userid)
+    passwordSave=Customer.objects.get(id=userid)
+    passwordSave.password=request.POST.get('npassword')
+    passwordSave.save()
+    msg='Password Successfully Changed'
+    return render(request,'login.html',{'error':msg})
