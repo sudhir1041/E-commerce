@@ -12,4 +12,8 @@ urlpatterns = [
     path('dashboard',dashboard,name='dashboard'),
     path('loginData',loginData,name='loginData'),
     path('profile',profile,name='profile'),
+    path('send_email',send_email,name='send_email'),
+    path('send_otp',send_otp,name='send_otp'),
+    path('verify_otp',verify_otp,name='verify_otp'),
+
 ]

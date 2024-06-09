@@ -1,5 +1,7 @@
 from django.shortcuts import render,redirect,HttpResponse
 from .models import Product,Product_category,Customer,Cart,Order
+from django.core.mail import send_mail
+import random
 
 def home(request):
     data=Product.objects.all()
@@ -72,3 +74,32 @@ def profile(request):
 def logout(request):
     del request.session['user_email']
     return redirect('/login')
+
+def send_email(request):
+    return render(request,'otp-email.html')
+
+def send_otp(request):
+    email=request.POST.get('email')
+    customer_email=Customer.objects.filter(email=email).first()
+    if customer_email:
+        verification_code=str(random.randint(100000, 999999))
+        subject = 'Easykart verification code'
+        message = 'Your Verification Code is '+verification_code
+        from_email = 'acestechnologypvtltd@gmail.com'
+        recipient_list = [email]
+        send_mail(subject, message, from_email, recipient_list,fail_silently=False)
+        request.session['verification_code'] = verification_code
+        return render(request, 'otp-verification.html')
+    else:
+        msg="This email is not registered"
+        return render(request,'login.html',{'error':msg})
+def verify_otp(request):
+    user_entered_otp = request.POST.get('otp')
+    user_send_otp = request.session.get('verification_code')
+    if user_entered_otp == user_send_otp:
+        msg='OTP verified successfully!'
+        return render(request,'login.html',{'error':msg})
+    else:
+        msg='Invalid OTP!'
+        return render(request,'otp-verification.html',{'error':msg})
+        
