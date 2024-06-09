@@ -79,20 +79,24 @@ def send_email(request):
     return render(request,'otp-email.html')
 
 def send_otp(request):
-    email=request.POST.get('email')
-    customer_email=Customer.objects.filter(email=email).first()
-    if customer_email:
-        verification_code=str(random.randint(100000, 999999))
-        subject = 'Easykart verification code'
-        message = 'Your Verification Code is '+verification_code
-        from_email = 'acestechnologypvtltd@gmail.com'
-        recipient_list = [email]
-        send_mail(subject, message, from_email, recipient_list,fail_silently=False)
-        request.session['verification_code'] = verification_code
-        return render(request, 'otp-verification.html')
+    if request.method=="POST":
+        username=request.POST.get('username')
+        username=Customer.objects.filter(email=username).first() or \
+            Customer.objects.filter(phone=username).first()
+        if username:
+            email=username.email
+            verification_code=str(random.randint(100000, 999999))
+            subject = 'Easykart verification code'
+            message = 'Your Verification Code is '+verification_code
+            from_email = 'acestechnologypvtltd@gmail.com'
+            recipient_list = [email]
+            send_mail(subject, message, from_email, recipient_list,fail_silently=False)
+            request.session['verification_code'] = verification_code
+            msg='Otp send Your Email'
+            return render(request, 'otp-verification.html',{'error':msg})
     else:
         msg="This email is not registered"
-        return render(request,'login.html',{'error':msg})
+        return render(request,'otp-email.html',{'error':msg})
 def verify_otp(request):
     user_entered_otp = request.POST.get('otp')
     user_send_otp = request.session.get('verification_code')
