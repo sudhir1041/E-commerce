@@ -190,7 +190,7 @@ def loginData(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        
+
         customer = Customer.objects.filter(email=username, password=password).first() or \
                    Customer.objects.filter(phone=username, password=password).first()
         
@@ -257,7 +257,8 @@ def verify_otp(request):
 def changepassword(request):
     usersetdata = request.session.get('setpassword')
     print(usersetdata)
-    passwordSave = Customer.objects.get(phone=usersetdata)
+    passwordSave = Customer.objects.get(email=usersetdata) or \
+        Customer.objects.get(phone=usersetdata)               
     passwordSave.password = request.POST.get('npassword')
     passwordSave.save()
     msg = 'Password Successfully Changed'
