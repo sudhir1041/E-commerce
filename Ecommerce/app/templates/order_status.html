@@ -4,7 +4,7 @@
 <h1>{{ product.product_name }}</h1>
 <img src="{{ product.product_image.url }}" alt="{{ product.product_name }}">
 <p>Price: {{ product.product_price }}</p>
-<p>Discounted Price: {{ product.product_price - product.product_discount_price }}</p>
+
 <p>Description: {{ product.product_description }}</p>
 <p>Category: {{ product.product_category.name }}</p>
 
@@ -14,7 +14,7 @@
     <div class="success">{{ success }}</div>
 {% endif %}
 
-<form method="POST" action="{% url 'place_order' product.id %}">
+<form method="POST" action="">
     {% csrf_token %}
     <label for="quantity">Quantity:</label>
     <input type="number" id="quantity" name="quantity" min="1" required>
