@@ -50,22 +50,43 @@ def cart(request):
     cart_items = Cart.objects.filter(customer=customer)
     cart_details = []
     total_price = 0
-    total_quantity=0
+    total_quantity = 0
 
     for item in cart_items:
-        total_discount = item.product.product_price-item.product.product_discount_price
-        total = total_discount* item.quantity
+        total_discount = item.product.product_price - item.product.product_discount_price
+        total = total_discount * item.quantity
         cart_details.append({
             'product_name': item.product.product_name,
             'product_price': item.product.product_price,
-            'product_discount_price': item.product.product_price-item.product.product_discount_price,
+            'product_discount_price': item.product.product_price - item.product.product_discount_price,
             'quantity': item.quantity,
+            'image': item.product.product_image,
             'total': total,
             'id': item.id
         })
         total_price += total
-        total_quantity = request.session.get('cart_quantity')
-    return render(request, 'cart.html', {'cart_items': cart_details, 'total_price': total_price,'total_quantity': total_quantity})
+        total_quantity += item.quantity  
+        request.session['cart_quantity'] = total_quantity
+
+    return render(request, 'cart.html', {'cart_items': cart_details, 'total_price': total_price, 'total_quantity': total_quantity})
+
+def increment_quantity(request, item_id):
+    cart_item = Cart.objects.filter(id=item_id).first()
+    if cart_item:
+        cart_item.quantity += 1
+        cart_item.save()
+    return redirect('cart')  
+
+def decrement_quantity(request, item_id):
+    cart_item = Cart.objects.filter(id=item_id).first()
+    if cart_item:
+        if cart_item.quantity > 1:
+            cart_item.quantity -= 1
+            cart_item.save()
+        else:
+            cart_item.delete()
+    return redirect('cart')
+
 def remove_from_cart(request, id):
     user_email = request.session.get('user_email')
     if not user_email:
@@ -85,6 +106,7 @@ def product_category(request, id):
     category = Product_category.objects.get(id=id)
     products = Product.objects.filter(product_category=category)
     return render(request, 'category.html', {'category': category, 'products': products})
+
 def add_to_cart(request, id):
     user_email = request.session.get('user_email')
     if not user_email:
@@ -104,15 +126,44 @@ def add_to_cart(request, id):
         cart_item.save()
 
     return redirect('/') 
+
+
 def product_detail(request, product_id):
     product = Product.objects.filter(id=product_id).first()
     if not product:
         return render(request, 'product_not_found.html')
     total_quantity = request.session.get('cart_quantity')
     return render(request, 'product_detail.html', {'product': product,'total_quantity':total_quantity})
+
 def buy_now(request, product_id):
     
     return HttpResponse("Buy Now feature is under construction.")
+
+def place_order(request):
+    user_email = request.session.get('user_email')
+    if not user_email:
+        return redirect('login')  
+
+    customer = Customer.objects.filter(email=user_email).first()
+    if not customer:
+        return redirect('login')  
+
+    cart_items = Cart.objects.filter(customer=customer)
+    if not cart_items.exists():
+        return render(request, 'order_status.html', {'error': 'Cart is empty'})
+
+    for item in cart_items:
+        Order.objects.create(
+            customer=customer,
+            product=item.product,
+            quantity=item.quantity
+        )
+        item.delete()
+
+    request.session['cart_quantity'] = 0
+    return render(request, 'order_status.html', {'success': 'Order placed successfully!'})
+
+
 # Customer Registration 
 def signup(request):
     return render(request, 'signup.html')
@@ -190,10 +241,9 @@ def loginData(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-
-        customer = Customer.objects.filter(email=username, password=password).first() or \
-                   Customer.objects.filter(phone=username, password=password).first()
-        
+        customer = Customer.objects.filter(email=username, password=password).first()
+        if not customer:
+            customer = Customer.objects.filter(phone=username, password=password).first()
         if customer:
             request.session['user_email'] = customer.email
             return redirect('/dashboard')
@@ -256,12 +306,17 @@ def verify_otp(request):
 
 def changepassword(request):
     usersetdata = request.session.get('setpassword')
-    print(usersetdata)
-    passwordSave = Customer.objects.get(email=usersetdata) or \
-        Customer.objects.get(phone=usersetdata)               
-    passwordSave.password = request.POST.get('npassword')
-    passwordSave.save()
-    msg = 'Password Successfully Changed'
+    if not usersetdata:
+        return redirect('login')
+    customer = Customer.objects.filter(email=usersetdata).first()
+    if not customer:
+        customer = Customer.objects.filter(phone=usersetdata).first()
+    if customer:
+        customer.password = request.POST.get('npassword')
+        customer.save()
+        msg = 'Password Successfully Changed'
+    else:
+        msg = 'User not found'
     return render(request, 'login.html', {'error': msg})
 
 def logout(request):

@@ -3,43 +3,45 @@
 {% block title %}Cart{% endblock %}
 {% block content %}
 <center>
-<div class="cart-container">
-    {% if cart_items %}
-    <h1>Your Cart</h1>
-        <table class="cart-table">
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Final Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
+    <div class="cart-container">
+        {% if cart_items %}
+        <h1>Your Cart</h1>
+        <div class="cart-content">
+            <div class="cart-items">
                 {% for item in cart_items %}
-                <tr>
-                    <td>{{ item.product_name }}</td>
-                    <td>Rs. {{ item.product_price }}</td>
-                    <td>Rs. {{ item.product_discount_price }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>Rs. {{ item.total }}</td>
-                    <td>
+                <div class="cart-item">
+                    <div class="item-info">
+                        <img src="{{ item.image.url }}" alt="{{ item.product_name }}" class="item-image">
+                        <div class="item-details">
+                            <p><strong>{{ item.product_name }}</strong></p>
+                            <p>Price: Rs. {{ item.product_price }}</p>
+                            <p>Final Price: Rs. {{ item.product_discount_price }}</p>
+                            <div class="quantity-controls">
+                                <a href="{% url 'decrement_quantity' item.id %}" class="quantity-btn">-</a>
+                                <p>{{ item.quantity }}</p>
+                                <a href="{% url 'increment_quantity' item.id %}" class="quantity-btn">+</a>
+                            </div>
+                            <p>Total: Rs. {{ item.total }}</p>
+                        </div>
+                    </div>
+                    <div class="item-actions">
                         <a href="{% url 'remove_from_cart' item.id %}" class="remove-btn">Remove</a>
-                    </td>
-                </tr>
+                    </div>
+                </div>
                 {% endfor %}
-            </tbody>
-        </table>
-        <div class="cart-total">
-            <p>Total: Rs. {{ total_price }}</p>
+            </div>
+            <div class="cart-summary">
+                <p><strong>Total Price:</strong> Rs. {{ total_price }}</p>
+                <p><strong>Total Quantity:</strong> {{ total_quantity }}</p>
+                <a href="{% url 'place_order' %}" class="order-btn">Order Now</a>
+            </div>
         </div>
-    {% else %}
-    <div class="emptykart">
+        {% else %}
+        <div class="empty-cart">
+            <p>Your cart is empty.</p>
         </div>
-    {% endif %}
-</div>
+        {% endif %}
+    </div>
 </center>
 {% endblock %}
 
