@@ -14,28 +14,38 @@
     <div class="nav">
         <div class="logo">
             <a href="/">
-            <img src="{% static 'images/lg-removebg-preview - Copy.png' %}" alt="">
+                <img src="{% static 'images/lg-removebg-preview - Copy.png' %}" alt="Logo">
             </a>
         </div>
         <form action="">
             <div class="search-container">
                 <div class="search">
-                    <input type="search" placeholder='Search for product and more' />
+                    <input type="search" placeholder="Search for product and more">
                 </div>
                 <button><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
         </form>
         
         <ul>
-            <li><a href="">Categories</a></li>
+            <li><a href="/">Home</a></li>
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">Categories</a>
+                <div class="dropdown-content">
+                    {% for category in categories %}
+                        <a href="{% url 'product_category' category.id %}">{{ category.category_name }}</a>
+                    {% endfor %}
+                </div>
+            </li>
             {% if request.session.user_email %}
                 <li><a href="{% url 'profile' %}"><span><i class="fa-solid fa-user"></i></span>Profile</a></li>
                 <li><a href="{% url 'logout' %}">Logout</a></li>
+                <li><a href="{% url 'cart' %}"><span><i class="fa-solid fa-cart-shopping"></i></span>Cart {{total_quantity}}</a></li>
             {% else %}
                 <li><a href="{% url 'login' %}"><span><i class="fa-solid fa-user"></i></span>Login</a></li>
                 <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                <li><a href="{% url 'cart' %}"><span><i class="fa-solid fa-cart-shopping"></i></span>Cart</a></li>
             {% endif %}
-            <li><a href="">Cart</a></li>
+         
         </ul>
     </div>
 

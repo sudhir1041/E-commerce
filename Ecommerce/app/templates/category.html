@@ -1,0 +1,12 @@
+{% extends "default.html" %}
+{% block title %}Categories{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Categories</h1>
+    <ul class="category-list">
+        {% for category in categories %}
+            <li><a href="{% url 'product_category' category.id %}" class="category-link">{{ category.name }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

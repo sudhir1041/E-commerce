@@ -17,5 +17,12 @@ urlpatterns = [
     path('verify_otp',verify_otp,name='verify_otp'),
     path('verify_register_otp',verify_register_otp,name='verify_register_otp'),
     path('changepassword',changepassword,name='changepassword'),
+    path('category/<int:id>/',product_category, name='product_category'),
+    path('cart/', cart, name='cart'),
+    path('remove-from-cart/<int:id>/',remove_from_cart, name='remove_from_cart'),
+    path('add-to-cart/<int:id>/', add_to_cart, name='add_to_cart'),
+    path('product/<int:product_id>/', product_detail, name='product_detail'),
+    path('add-to-cart/<int:product_id>/', add_to_cart, name='add_to_cart'),
+    path('buy-now/<int:product_id>/', buy_now, name='buy_now'),
 
 ]

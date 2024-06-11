@@ -1,0 +1,48 @@
+{% extends "default.html" %}
+{% load static %}
+{% block title %}Cart{% endblock %}
+{% block content %}
+<center>
+<div class="cart-container">
+    {% if cart_items %}
+    <h1>Your Cart</h1>
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Final Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.product_name }}</td>
+                    <td>Rs. {{ item.product_price }}</td>
+                    <td>Rs. {{ item.product_discount_price }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>Rs. {{ item.total }}</td>
+                    <td>
+                        <a href="{% url 'remove_from_cart' item.id %}" class="remove-btn">Remove</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="cart-total">
+            <p>Total: Rs. {{ total_price }}</p>
+        </div>
+    {% else %}
+    <div class="emptykart">
+        </div>
+    {% endif %}
+</div>
+</center>
+{% endblock %}
+
+{% block footer %}
+<!-- Add any footer content here -->
+{% endblock %}
