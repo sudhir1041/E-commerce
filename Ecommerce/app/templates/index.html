@@ -1,9 +1,34 @@
 {% extends "default.html" %}
+{% load static %}
 {% block title %}index{% endblock %}
 {% block content %}
-<h1>Welcome To EasyKart!!!!</h1>
-<h2 class="center">Cloth</h2>
 <section>
+    <div class="carouselContainer">
+        <div class="carouselInner">
+            <div class="carouselItem">
+                <img src="{% static 'images/image3.webp' %}" alt="Image 1" />
+            </div>
+            <div class="carouselItem">
+                <img src="{% static 'images/image2.webp' %}" alt="Image 2" />
+            </div>
+            <div class="carouselItem">
+                <img src="{% static 'images/elctronics.jpg' %}" alt="Image 3" />
+            </div>
+            <div class="carouselItem">
+                <img src="{% static 'images/image4.webp' %}" alt="Image 4" />
+            </div>
+            <div class="carouselItem">
+                <img src="{% static 'images/image3.avif' %}" alt="Image 5" />
+            </div>
+        </div>
+        <button class="carouselControlPrev">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="carouselControlNext">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+    <h2 class="center">Cloth</h2>
     <div class="product-main">
         {% for key in product_data %}
         <div class="product-card">
@@ -25,11 +50,11 @@
                 </div>
                 <div class="actions">
                     {% if request.session.user_email %}
-                        <button class="view-button"><a href="/product/{{ key.id }}">View logged</a></button>
-                        <button class="add-to-cart-button"><a href="{% url 'add_to_cart' key.id %}">Add to Cart</a></button>
+                    <button class="view-button"><a href="/product/{{ key.id }}">View logged</a></button>
+                    <button class="add-to-cart-button"><a href="{% url 'add_to_cart' key.id %}">Add to Cart</a></button>
                     {% else %}
-                        <button class="view-button"><a href="/product/{{ key.id }}">View</a></button>
-                        <button class="add-to-cart-button"><a href="{% url 'add_to_cart' key.id %}">Add to Cart</a></button>
+                    <button class="view-button"><a href="/product/{{ key.id }}">View</a></button>
+                    <button class="add-to-cart-button"><a href="{% url 'add_to_cart' key.id %}">Add to Cart</a></button>
                     {% endif %}
                 </div>
             </div>
