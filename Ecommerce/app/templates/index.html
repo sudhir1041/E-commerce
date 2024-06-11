@@ -1,36 +1,40 @@
 {% extends "default.html" %}
-{% block title %}index{% endblock  %}
-{%block content%}
-<h1>
-    Welcome To EasyKart!!!!
-</h1>
-<h2>Cloth</h1>
-    <section>
-        <div class="product-main">
-            {% for key in data %}
-
-            <div class="product-card">
-                <div class="product-image">
-                    <img src="{{key.product_image.url}}" alt="">
+{% block title %}index{% endblock %}
+{% block content %}
+<h1>Welcome To EasyKart!!!!</h1>
+<h2 class="center">Cloth</h2>
+<section>
+    <div class="product-main">
+        {% for key in product_data %}
+        <div class="product-card">
+            <div class="product-image">
+                <img src="{{ key.product_image.url }}" alt="{{ key.product_name }}">
+            </div>
+            <div class="product-detail">
+                <div class="description">
+                    <p>{{ key.product_name }}</p>
                 </div>
-                <div class="product-detail">
-                    <div class="description">
-                        <p>{{key.product_name}}</p>
-                    </div>
-                    <div class="price">
-                         <p><del style="color: gray;">Rs.{{key.product_price}}</del><span style="margin-left: 5px;">Rs.299</span></p>
-                    </div>
-                    <div class="type">
-                        <pre>{{key.product_description}}</pre>
-                    </div>
+                <div class="price">
+                    <p>
+                        <del style="color: gray;">Rs.{{ key.product_price }}</del>
+                        <span style="margin-left: 5px;">Rs.{{key.product_discount_price}}</span>
+                    </p>
+                </div>
+                <div class="type">
+                    <pre>{{ key.product_description }}</pre>
+                </div>
+                <div class="actions">
+                    {% if request.session.user_email %}
+                        <button class="view-button"><a href="/product/{{ key.id }}">View logged</a></button>
+                        <button class="add-to-cart-button"><a href="{% url 'add_to_cart' key.id %}">Add to Cart</a></button>
+                    {% else %}
+                        <button class="view-button"><a href="/product/{{ key.id }}">View</a></button>
+                        <button class="add-to-cart-button"><a href="{% url 'add_to_cart' key.id %}">Add to Cart</a></button>
+                    {% endif %}
                 </div>
             </div>
-
-
-            {% endfor %}
         </div>
-    </section>
-
-
-
-    {%endblock%}
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

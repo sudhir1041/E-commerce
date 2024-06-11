@@ -1,0 +1,21 @@
+{% extends "default.html" %}
+
+{% block title %}email Otp{% endblock %}
+
+{% block content %}
+
+<div class="wrapper">
+    <div class="login-container">
+        <div class="login-header">
+            <h2>Forgot Password</h2>
+        </div>
+        <p class="error-message">{{error}}</p>
+        <form action="{% url 'send_otp' %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Enter Email" required>
+            <input type="submit" value="send">
+        </form>
+    </div>
+</div>
+
+{% endblock  %}

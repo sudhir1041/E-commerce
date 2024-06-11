@@ -1,0 +1,21 @@
+{% extends "default.html" %}
+
+{% block title %}Otp Verification{% endblock %}
+
+{% block content %}
+
+<div class="wrapper">
+    <div class="login-container">
+        <div class="login-header">
+            <h2>Verify Otp</h2>
+        </div>
+        <p class="error-message">{{error}}</p>
+        <form action="{% url 'verify_otp' %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="otp" placeholder="Enter Otp" required>
+            <input type="submit" value="verify">
+        </form>
+    </div>
+</div>
+
+{% endblock  %}
