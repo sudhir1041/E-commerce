@@ -7,7 +7,7 @@
 .nav {
     height: 12vh;
     width: 100%;
-    background-color: #41515C;
+    background-color: #333;
     display: flex;
     justify-content: space-between;
 }
@@ -92,7 +92,6 @@
 
 /* Dropdown Button */
 .dropbtn {
-    background-color: #41515C;
     color: white;
     padding: 16px;
     font-size: 20px;
@@ -180,4 +179,50 @@
         width: 20%;
     }
 
+}
+
+/* =============footer section =======*/
+.custom-footer {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+.footer-detail{
+    display: flex;
+    justify-content: space-around;
+}
+
+.footer-section-left {
+    text-align: left;
+}
+
+.footer-section-right {
+    text-align: right;
+    display: flex;
+    justify-content: space-around;
+}
+
+.footer-logo {
+    width: 100px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.social-media-icon i {
+    width: 30px;
+    margin: 0 10px;
+    padding: 20px;
+    color: white;
+}
+
+.footer-contact,
+.footer-copyright {
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+
+.footer-contact p,
+.footer-copyright p {
+    margin: 5px 0;
 }

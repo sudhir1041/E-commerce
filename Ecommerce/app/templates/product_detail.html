@@ -1,24 +1,20 @@
 {% extends "default.html" %}
 {% block title %}{{ product.product_name }}{% endblock %}
 {% block content %}
-<div class="product-detail-container">
-    <div class="product-image">
+<div class="product-details-wrapper">
+    <div class="product-image-container">
         <img src="{{ product.product_image.url }}" alt="{{ product.product_name }}">
     </div>
-    <div class="product-details">
+    <div class="product-info-container">
         <h1>{{ product.product_name }}</h1>
-        <p class="price">Price: Rs. {{ product.product_price }}</p>
-        <div class="description">
+        <p class="product-cost">Price: Rs. {{ product.product_price }}</p>
+        <div class="product-description-text">
             <p>{{ product.product_description }}</p>
         </div>
-        <div class="actions">
-            <a href="{% url 'add_to_cart' product.id %}" class="add-to-cart-button">Add to Cart</a>
-            <a href="{% url 'buy_now' product.id %}" class="buy-now-button">Buy Now</a>
+        <div class="product-action-buttons">
+            <a href="{% url 'add_to_cart' product.id %}" class="action-btn add-to-cart-btn">Add to Cart</a>
+            <a href="{% url 'buy_now' product.id %}" class="action-btn buy-now-btn">Buy Now</a>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block footer %}
-<!-- Add any footer content here -->
 {% endblock %}

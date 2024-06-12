@@ -3,7 +3,8 @@
 {% block title %}index{% endblock %}
 {% block content %}
 <section>
-    <div class="carouselContainer">
+    <div class="index-main">
+        <div class="carouselContainer">
         <div class="carouselInner">
             <div class="carouselItem">
                 <img src="{% static 'images/image3.webp' %}" alt="Image 1" />
@@ -45,12 +46,9 @@
                         <span style="margin-left: 5px;">Rs.{{key.product_discount_price}}</span>
                     </p>
                 </div>
-                <div class="type">
-                    <pre>{{ key.product_description }}</pre>
-                </div>
                 <div class="actions">
                     {% if request.session.user_email %}
-                    <button class="view-button"><a href="/product/{{ key.id }}">View logged</a></button>
+                    <button class="view-button"><a href="/product/{{ key.id }}">View</a></button>
                     <button class="add-to-cart-button"><a href="{% url 'add_to_cart' key.id %}">Add to Cart</a></button>
                     {% else %}
                     <button class="view-button"><a href="/product/{{ key.id }}">View</a></button>
@@ -60,6 +58,7 @@
             </div>
         </div>
         {% endfor %}
+    </div>
     </div>
 </section>
 {% endblock %}
