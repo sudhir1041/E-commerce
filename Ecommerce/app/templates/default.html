@@ -21,10 +21,11 @@
                 <img src="{% static 'images/lg-removebg-preview - Copy.png' %}" alt="Logo">
             </a>
         </div>
-        <form action="">
+        <form action="search" method="GET">
+            {% csrf_token %}
             <div class="search-container">
                 <div class="search">
-                    <input type="search" placeholder="Search for product and more">
+                    <input type="search" name="query" placeholder="Search for product and more">
                 </div>
                 <button><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
@@ -65,7 +66,7 @@
                 <img src="../static/images/lg-removebg-preview - Copy.png" alt="Company Logo" class="footer-logo">
                 <p>Aces Technology Pvt. Ltd</p>
                 <p>209 B / Bharti Bhawan Piplani</p>
-                <p>Bhopal, Madhyapradesh, 462022</p>
+                <p>Bhopal, Madhya pradesh, 462022</p>
             </div>
             <div class="footer-section-right">
                 <a href="https://www.facebook.com" class="social-media-icon" target="_blank"><i class="fa-brands fa-square-facebook" ></i>
@@ -75,6 +76,7 @@
                 <a href="https://www.twitter.com" class="social-media-icon" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
             </div>
         </div>
+        <br>
         <hr>
         <div class="footer-contact">
             <p>Support: acestechnologypvtltd@gmail.com</p>

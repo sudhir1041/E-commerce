@@ -36,13 +36,21 @@ class Cart(models.Model):
 
     def __str__(self):
         return self.customer.name
-
+STATUS_CHOICES = [
+        ('Ordered', 'Ordered'),
+        ('Accepted', 'Accepted'),
+        ('Rejected', 'Rejected'),
+        ('Packed', 'Packed'),
+        ('Shipped', 'Shipped'),
+        ('Delivered', 'Delivered'),
+        ('Cancelled', 'Cancelled'),
+    ]
 class Order(models.Model):
     customer = models.ForeignKey('Customer', on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True)
     quantity = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Ordered')
 
     def __str__(self):
-        return self.customer.name
-    
+        return f"{self.customer.name} - {self.product.product_name} - {self.get_status_display()}"

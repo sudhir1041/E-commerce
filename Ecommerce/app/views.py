@@ -3,6 +3,9 @@ from .models import Product, Product_category, Customer, Cart, Order
 from django.core.mail import send_mail
 from django.core.files.storage import FileSystemStorage
 import random
+import razorpay
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 
 def home(request):
     product_details = []
@@ -67,6 +70,7 @@ def cart(request):
         total_price += total
         total_quantity += item.quantity  
         request.session['cart_quantity'] = total_quantity
+        request.session['payment_amount'] = total_price
 
     return render(request, 'cart.html', {'cart_items': cart_details, 'total_price': total_price, 'total_quantity': total_quantity})
 
@@ -134,11 +138,75 @@ def product_detail(request, product_id):
         return render(request, 'product_not_found.html')
     total_quantity = request.session.get('cart_quantity')
     return render(request, 'product_detail.html', {'product': product,'total_quantity':total_quantity})
+razorpay_client = razorpay.Client(
+    auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
+def buy_now(request):
+    user_email = request.session.get('user_email')
+    if not user_email:
+        return redirect('/login')
 
-def buy_now(request, product_id):
-    
-    return HttpResponse("Buy Now feature is under construction.")
+    if request.method == 'POST':
+        # Handle the payment confirmation
+        payment_id = request.POST.get('razorpay_payment_id')
+        order_id = request.POST.get('razorpay_order_id')
+        signature = request.POST.get('razorpay_signature')
 
+        # Verify the payment
+        params_dict = {
+            'razorpay_order_id': order_id,
+            'razorpay_payment_id': payment_id,
+            'razorpay_signature': signature
+        }
+
+        if razorpay_client.utility.verify_payment_signature(params_dict):
+            # Payment successful
+            customer = Customer.objects.filter(email=user_email).first()
+            cart_items = Cart.objects.filter(customer=customer)
+            order_details = []
+            for item in cart_items:
+                total_price = item.quantity * (item.product.product_price - item.product.product_discount_price)
+                order_details.append({
+                    'product_name': item.product.product_name,
+                    'product_price': item.product.product_price,
+                    'product_discount_price': item.product.product_discount_price,
+                    'quantity': item.quantity,
+                    'product_image': item.product.product_image.url,
+                    'total_price': total_price
+                })
+                Order.objects.create(
+                    customer=customer,
+                    product=item.product,
+                    quantity=item.quantity
+                )
+                item.delete()
+
+            request.session['cart_quantity'] = 0
+            return render(request, 'order_status.html', {'success': 'Order placed and payment successful!', 'order_details': order_details})
+        else:
+            return render(request, 'order_status.html', {'error': 'Payment verification failed!'})
+
+    else:
+        # Display the payment form
+        amount = request.session.get('payment_amount', 0)
+        currency = 'INR'
+        amount = int(amount * 100)
+
+        razorpay_order = razorpay_client.order.create(dict(
+            amount=amount,
+            currency=currency,
+            payment_capture='0'))
+
+        razorpay_order_id = razorpay_order['id']
+
+        context = {
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_merchant_key': settings.RAZOR_KEY_ID,
+            'razorpay_amount': amount,
+            'currency': currency,
+        }
+        return render(request, 'order_confirm.html', context=context)
+
+@csrf_exempt
 def place_order(request):
     user_email = request.session.get('user_email')
     if not user_email:
@@ -152,7 +220,17 @@ def place_order(request):
     if not cart_items.exists():
         return render(request, 'order_status.html', {'error': 'Cart is empty'})
 
+    order_details = []
     for item in cart_items:
+        total_price = item.quantity * (item.product.product_price - item.product.product_discount_price)
+        order_details.append({
+            'product_name': item.product.product_name,
+            'product_price': item.product.product_price,
+            'product_discount_price': item.product.product_discount_price,
+            'quantity': item.quantity,
+            'product_image': item.product.product_image.url,
+            'total_price': total_price
+        })
         Order.objects.create(
             customer=customer,
             product=item.product,
@@ -161,9 +239,7 @@ def place_order(request):
         item.delete()
 
     request.session['cart_quantity'] = 0
-    return render(request, 'order_status.html', {'success': 'Order placed successfully!'})
-
-
+    return render(request, 'order_status.html', {'success': 'Order placed successfully!', 'order_details': order_details})
 # Customer Registration 
 def signup(request):
     return render(request, 'signup.html')
@@ -265,9 +341,21 @@ def profile(request):
     if not user_email:
         return redirect('/login')
     else:
+        customer = Customer.objects.filter(email=user_email).first()
+        latest_order = Order.objects.filter(customer=customer).order_by('-created_at').first()
         total_quantity = request.session.get('cart_quantity')
-        customer = Customer.objects.get(email=user_email)
-        return render(request, 'profile.html', {'customer': customer,'total_quantity':total_quantity})
+        return render(request, 'profile.html', {'customer': customer, 'latest_order': latest_order, 'total_quantity':total_quantity})
+
+def cancel_order(request, order_id):
+    user_email = request.session.get('user_email')
+    if not user_email:
+        return redirect('/login')
+    customer = Customer.objects.filter(email=user_email).first()
+    order = Order.objects.filter(id=order_id, customer=customer).first()
+    if order and order.status != 'Cancelled':
+        order.status = 'Cancelled'
+        order.save()
+    return redirect('view_all_orders')
 
 def send_email(request):
     return render(request, 'otp-email.html')
@@ -323,3 +411,52 @@ def logout(request):
     if 'user_email' in request.session:
         del request.session['user_email']
     return redirect('/login')
+
+def update_profile(request):
+
+    return render(request, 'update_profile.html')
+
+def edit_address(request):
+
+    return render(request, 'edit_address.html')
+def change_password_page(request):
+    user_email = request.session.get('user_email')
+    if not user_email:
+        msg = 'User not found'
+        return render(request, 'login.html', {'error': msg})
+    else:
+        return render(request,'change_password.html')
+def change_password(request):
+    user_email = request.session.get('user_email')
+    if not user_email:
+        return redirect('login')
+    customer = Customer.objects.filter(email=user_email).first()
+    if not customer:
+        customer = Customer.objects.filter(phone=user_email).first()
+    if customer:
+        customer.password = request.POST.get('npassword')
+        customer.save()
+        msg = 'Password Successfully Changed'
+        return redirect('/profile')
+    else:
+        msg = 'User not found'
+    return render(request, 'login.html', {'error': msg})
+
+def view_all_orders(request):
+    user_email = request.session.get('user_email')
+    if not user_email:
+        return redirect('login')
+    
+    customer = Customer.objects.get(email=user_email)
+    orders = customer.order_set.all()
+    total_quantity = request.session.get('cart_quantity')
+    return render(request, 'view_all_orders.html', {'orders': orders, 'total_quantity':total_quantity})
+
+def search(request):
+    query = request.GET.get('query')
+    results = []
+    if query:
+        results = Product.objects.filter(product_name__icontains=query)
+        print(results)
+    return render(request, 'find_product.html', {'product_data': results, 'query': query})
+

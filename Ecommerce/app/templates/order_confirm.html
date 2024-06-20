@@ -1,0 +1,25 @@
+{% extends "default.html" %}
+
+{% block title %}Confirm Order{% endblock %}
+
+{% block content %}
+<div class="orderconfirm-container">
+    <h2>Confirm Your Order</h2>
+    <form id="payment-form" method="POST">
+        {% csrf_token %}
+        <script
+            src="https://checkout.razorpay.com/v1/checkout.js"
+            data-key="{{ razorpay_merchant_key }}"
+            data-amount="{{ razorpay_amount }}"
+            data-currency="{{ currency }}"
+            data-order_id="{{ razorpay_order_id }}"
+            data-buttontext="Pay with Razorpay"
+            data-name="Easykart"
+            data-description="Order Payment"
+        ></script>
+        <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+        <input type="hidden" name="razorpay_order_id" id="razorpay_order_id" value="{{ razorpay_order_id }}">
+        <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+    </form>
+</div>
+{% endblock %}

@@ -135,3 +135,9 @@ EMAIL_HOST_USER = 'acestechnologypvtltd@gmail.com'
 EMAIL_HOST_PASSWORD = 'cdntppnlzwplnzrz'
 EMAIL_USE_TLS = True
 
+
+
+RAZOR_KEY_ID='rzp_test_dAeKznpfJoVqVt'
+RAZOR_KEY_SECRET='OA8xXFOj9pRlxQq0SmHe5KEc'
+
+

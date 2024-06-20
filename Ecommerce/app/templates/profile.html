@@ -3,5 +3,61 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-    <h1>This is profile</h1>
-{% endblock  %}
+<div class="profile-container">
+    <div class="profile-header">
+        <h1>Welcome to Easykart {{ customer.name }}</h1>
+    </div>
+    
+    <div class="profile-content">
+        <div class="account-info">
+            <h2>Your Account</h2>
+            <img src="{{ customer.image.url }}" alt="{{ customer.name }}" class="profile-image">
+            <p><strong>Email:</strong> {{ customer.email }}</p>
+            <p><strong>Phone:</strong> {{ customer.phone }}</p>
+            <p><strong>Address:</strong> {{ customer.address }}</p>
+        </div>
+        
+        <div class="order-info">
+            <h2>Your Latest Order</h2>
+            {% if latest_order %}
+                <table class="order-table">
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                        <th>Order Date</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr>
+                        <td>{{ latest_order.id }}</td>
+                        <td>{{ latest_order.product.product_name }}</td>
+                        <td>{{ latest_order.quantity }}</td>
+                        <td>{{ latest_order.get_status_display }}</td>
+                        <td>{{ latest_order.created_at }}</td>
+                        <td>
+                            {% if latest_order.status != 'Cancelled' %}
+                                <form method="POST" action="{% url 'cancel_order' latest_order.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-cancel">Cancel</button>
+                                </form>
+                            {% else %}
+                                <span>Cancelled</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+                <button onclick="location.href='{% url 'view_all_orders' %}'" class="btn">View All Orders</button>
+            {% else %}
+                <p>You have no orders.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="profile-actions">
+        <button onclick="location.href='{% url 'update_profile' %}'" class="btn">Update Profile</button>
+        <button onclick="location.href='{% url 'edit_address' %}'" class="btn">Edit Address</button>
+        <button onclick="location.href='{% url 'change_password_page' %}'" class="btn">Change Password</button>
+    </div>
+</div>
+{% endblock %}

@@ -28,6 +28,8 @@
     position: relative;
     top: 25%;
     background-color: #ffff;
+    border-radius: 5px;
+    padding: 10px;
 }
 
 .nav form .search-container {
@@ -35,7 +37,7 @@
     width: 100%;
     display: flex;
     background-color: transparent;
-    border: 2px solid rgb(101, 87, 225);
+    border-radius: 200px;
 }
 
 .nav form .search-container .search {
