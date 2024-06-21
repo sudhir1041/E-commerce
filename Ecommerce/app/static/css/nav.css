@@ -92,6 +92,11 @@
     font-size: 40px;
 }
 
+#Cart {
+    color: white;
+    background-color: #ce1818;
+}
+
 /* Dropdown Button */
 .dropbtn {
     color: white;
@@ -190,7 +195,8 @@
     padding: 20px;
     text-align: center;
 }
-.footer-detail{
+
+.footer-detail {
     display: flex;
     justify-content: space-around;
 }

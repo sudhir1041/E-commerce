@@ -44,14 +44,13 @@
             {% if request.session.user_email %}
             <li><a href="{% url 'profile' %}"><span><i class="fa-solid fa-user"></i></span>Profile</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
-            <li><a href="{% url 'cart' %}"><span><i class="fa-solid fa-cart-shopping"></i></span> {{total_quantity}}</a>
-            </li>
             {% else %}
             <li id="ic"><a href="{% url 'login' %}"><span><i class="fa-solid fa-user"></i></span>Login</a></li>
             <li><a href="{% url 'signup' %}">Sign Up</a></li>
-            <li id="ic"><a href="{% url 'cart' %}"><span><i class="fa-solid fa-cart-shopping"></i></span>0</a></li>
             {% endif %}
         </ul>
+        <div id="Cart"><a href="{% url 'cart' %}"><span><i class="fa-solid fa-cart-shopping"></i></span> {{total_quantity}}</a>
+        </div>
         <button class="bar" onclick="openmenu()"><i id="icon" class="fa-solid fa-bars-staggered"></i></button>
     </div>
     {% endblock header %}
