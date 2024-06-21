@@ -1,12 +1,40 @@
 {% extends "default.html" %}
-{% block title %}Categories{% endblock %}
+{% load static %}
+{% block title %} Products{% endblock %}
 {% block content %}
-<div class="container">
-    <h1>Categories</h1>
-    <ul class="category-list">
-        {% for category in categories %}
-            <li><a href="{% url 'product_category' category.id %}" class="category-link">{{ category.name }}</a></li>
-        {% endfor %}
-    </ul>
-</div>
+<section>
+    <div class="category-main">
+        <h2 class="center">{{ category }}</h2>
+        <div class="product-main">
+            {% for key in products %}
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="{{ key.product_image.url }}" alt="{{ key.product_name }}">
+                </div>
+                <div class="product-detail">
+                    <div class="description">
+                        <p>{{ key.product_name }}</p>
+                    </div>
+                    <div class="price">
+                        <p>
+                            <del style="color: gray;">Rs.{{ key.product_price }}</del>
+                            <span style="margin-left: 5px;">Rs.{{ key.product_discount_price }}</span>
+                        </p>
+                    </div>
+                    <div class="actions">
+                        {% if request.session.user_email %}
+                        <button class="view-button"><a href="/product/{{ key.id }}">View</a></button>
+                        <button class="add-to-cart-button"><a href="{% url 'add_to_cart' key.id %}">Add to Cart</a></button>
+                        {% else %}
+                        <button class="view-button"><a href="/product/{{ key.id }}">View</a></button>
+                        <button class="add-to-cart-button"><a href="{% url 'add_to_cart' key.id %}">Add to Cart</a></button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

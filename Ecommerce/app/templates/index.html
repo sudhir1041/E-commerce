@@ -5,60 +5,63 @@
 <section>
     <div class="index-main">
         <div class="carouselContainer">
-        <div class="carouselInner">
-            <div class="carouselItem">
-                <img src="{% static 'images/image3.webp' %}" alt="Image 1" />
+            <div class="carouselInner">
+                <div class="carouselItem">
+                    <img src="{% static 'images/image3.webp' %}" alt="Image 1" />
+                </div>
+                <div class="carouselItem">
+                    <img src="{% static 'images/image2.webp' %}" alt="Image 2" />
+                </div>
+                <div class="carouselItem">
+                    <img src="{% static 'images/elctronics.jpg' %}" alt="Image 3" />
+                </div>
+                <div class="carouselItem">
+                    <img src="{% static 'images/image4.webp' %}" alt="Image 4" />
+                </div>
+                <div class="carouselItem">
+                    <img src="{% static 'images/image3.avif' %}" alt="Image 5" />
+                </div>
             </div>
-            <div class="carouselItem">
-                <img src="{% static 'images/image2.webp' %}" alt="Image 2" />
-            </div>
-            <div class="carouselItem">
-                <img src="{% static 'images/elctronics.jpg' %}" alt="Image 3" />
-            </div>
-            <div class="carouselItem">
-                <img src="{% static 'images/image4.webp' %}" alt="Image 4" />
-            </div>
-            <div class="carouselItem">
-                <img src="{% static 'images/image3.avif' %}" alt="Image 5" />
-            </div>
+            <button class="carouselControlPrev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carouselControlNext">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
-        <button class="carouselControlPrev">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-        <button class="carouselControlNext">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-    </div>
-    <h2 class="center">Cloth</h2>
-    <div class="product-main">
-        {% for key in product_data %}
-        <div class="product-card">
-            <div class="product-image">
-                <img src="{{ key.product_image.url }}" alt="{{ key.product_name }}">
-            </div>
-            <div class="product-detail">
-                <div class="description">
-                    <p>{{ key.product_name }}</p>
+        
+        {% for category, products in product_data.items %}
+        <h2 class="center">{{ category }}</h2>
+        <div class="product-main">
+            {% for key in products %}
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="{{ key.product_image.url }}" alt="{{ key.product_name }}">
                 </div>
-                <div class="price">
-                    <p>
-                        <del style="color: gray;">Rs.{{ key.product_price }}</del>
-                        <span style="margin-left: 5px;">Rs.{{key.product_discount_price}}</span>
-                    </p>
-                </div>
-                <div class="actions">
-                    {% if request.session.user_email %}
-                    <button class="view-button"><a href="/product/{{ key.id }}">View</a></button>
-                    <button class="add-to-cart-button"><a href="{% url 'add_to_cart' key.id %}">Add to Cart</a></button>
-                    {% else %}
-                    <button class="view-button"><a href="/product/{{ key.id }}">View</a></button>
-                    <button class="add-to-cart-button"><a href="{% url 'add_to_cart' key.id %}">Add to Cart</a></button>
-                    {% endif %}
+                <div class="product-detail">
+                    <div class="description">
+                        <p>{{ key.product_name }}</p>
+                    </div>
+                    <div class="price">
+                        <p>
+                            <del style="color: gray;">Rs.{{ key.product_price }}</del>
+                            <span style="margin-left: 5px;">Rs.{{ key.product_discount_price }}</span>
+                        </p>
+                    </div>
+                    <div class="actions">
+                        {% if request.session.user_email %}
+                        <button class="view-button"><a href="/product/{{ key.id }}">View</a></button>
+                        <button class="add-to-cart-button"><a href="{% url 'add_to_cart' key.id %}">Add to Cart</a></button>
+                        {% else %}
+                        <button class="view-button"><a href="/product/{{ key.id }}">View</a></button>
+                        <button class="add-to-cart-button"><a href="{% url 'add_to_cart' key.id %}">Add to Cart</a></button>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
         {% endfor %}
-    </div>
     </div>
 </section>
 {% endblock %}

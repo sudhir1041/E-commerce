@@ -6,35 +6,44 @@ import random
 import razorpay
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from collections import defaultdict
 
 def home(request):
-    product_details = []
-    total_quantity_product = []
-    total_quantity = 0
     product_data = Product.objects.all()
+    categorized_products = {}
+
     for item in product_data:
-        product_details.append({
+        category_name = item.product_category.category_name
+        if category_name not in categorized_products:
+            categorized_products[category_name] = []
+        categorized_products[category_name].append({
             'product_name': item.product_name,
             'product_price': item.product_price,
             'product_discount_price': item.product_price - item.product_discount_price,
-            'product_description' : item.product_description,
-            'product_category' : item.product_category,
-            'product_image' : item.product_image,
+            'product_description': item.product_description,
+            'product_category': category_name,
+            'product_image': item.product_image,
             'id': item.id
         })
-    
-    quantity_product = Cart.objects.all()
-    for tquantity in quantity_product:
-        total_quantity_product.append({
-            'quantity': tquantity.quantity
-        })
-        total_quantity += tquantity.quantity  
-        request.session['cart_quantity'] = total_quantity
-    print(total_quantity_product)
-    print(f'Total Quantity: {total_quantity}')
-    categories = Product_category.objects.all()
 
-    return render(request, "index.html", {'product_data': product_details, 'categories': categories, 'total_quantity': total_quantity})
+    user_email = request.session.get('user_email')
+    customer = Customer.objects.filter(email=user_email).first()
+    total_quantity = 0
+
+    if customer:
+        quantity_product = Cart.objects.filter(customer=customer)
+        total_quantity = sum(item.quantity for item in quantity_product)
+        request.session['cart_quantity'] = total_quantity
+    else:
+        request.session['cart_quantity'] = 0
+
+    categories = Product_category.objects.all()
+    return render(request, "index.html", {
+        'product_data': categorized_products, 
+        'categories': categories, 
+        'total_quantity': total_quantity
+    })
+
 
 def product_view(request):
     product = Product.objects.all()
@@ -109,7 +118,8 @@ def remove_from_cart(request, id):
 def product_category(request, id):
     category = Product_category.objects.get(id=id)
     products = Product.objects.filter(product_category=category)
-    return render(request, 'category.html', {'category': category, 'products': products})
+    categories = Product_category.objects.all()
+    return render(request, 'category.html', {'category': category, 'products': products, 'categories':categories})
 
 def add_to_cart(request, id):
     user_email = request.session.get('user_email')
