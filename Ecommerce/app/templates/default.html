@@ -52,7 +52,7 @@
             <li id="ic"><a href="{% url 'cart' %}"><span><i class="fa-solid fa-cart-shopping"></i></span>0</a></li>
             {% endif %}
         </ul>
-        <button class="bar" onclick="openmenu()"><i class="fa-solid fa-bars-staggered"></i></button>
+        <button class="bar" onclick="openmenu()"><i id="icon" class="fa-solid fa-bars-staggered"></i></button>
     </div>
     {% endblock header %}
     {% block content %}
@@ -69,11 +69,14 @@
                 <p>Bhopal, Madhya pradesh, 462022</p>
             </div>
             <div class="footer-section-right">
-                <a href="https://www.facebook.com" class="social-media-icon" target="_blank"><i class="fa-brands fa-square-facebook" ></i>
-                        </a>
-                <a href="https://www.instagram.com" class="social-media-icon" target="_blank"><i class="fa-brands fa-instagram" ></i>
-                        </a>
-                <a href="https://www.twitter.com" class="social-media-icon" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="https://www.facebook.com" class="social-media-icon" target="_blank"><i
+                        class="fa-brands fa-square-facebook"></i>
+                </a>
+                <a href="https://www.instagram.com" class="social-media-icon" target="_blank"><i
+                        class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="https://www.twitter.com" class="social-media-icon" target="_blank"><i
+                        class="fa-brands fa-x-twitter"></i></a>
             </div>
         </div>
         <br>
@@ -86,12 +89,19 @@
             <p>&copy; 2024 Easykart. All rights reserved.</p>
         </div>
     </footer>
-    
+
 
     <script>
         function openmenu() {
             var x = document.getElementById('menu');
-            x.style.top = '12vh';
+            var y = document.getElementById('icon');
+            if (x.style.top === "-100%") {
+                x.style.top = "12vh";
+                y.className = "fa fa-times";
+            } else {
+                x.style.top = "-100%";
+                y.className = "fa-solid fa-bars-staggered";
+            }
         }
     </script>
 </body>
