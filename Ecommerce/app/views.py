@@ -6,7 +6,6 @@ import random
 import razorpay
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from collections import defaultdict
 
 def home(request):
     product_data = Product.objects.all()
